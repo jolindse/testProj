@@ -27,7 +27,7 @@ public class DatabaseConnectionTest {
     @Before
     public void init() {
         dbconn = new DatabaseConnection();
-        individual = new Individual("Mattias", "Larsson", "Java");
+        individual = new Individual("Mattias", "Larsson", "Java",7777777);
     }
 
     @Test
@@ -45,8 +45,8 @@ public class DatabaseConnectionTest {
     @Test
     public void testInsertIndividual() {
         assertTrue("Could not add individual to DB",dbconn.addIndividual(individual));
-        assertNotEquals("Individual has no ID",0,individual.getId());
     }
+
 
     @Test
     public void testUpdateIndividual() {

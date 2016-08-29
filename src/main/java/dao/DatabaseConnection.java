@@ -52,7 +52,7 @@ public class DatabaseConnection {
     private void initDB() {
         String sqlInit[] = {
                 "CREATE TABLE IF NOT EXISTS tasks (id INTEGER NOT NULL PRIMARY KEY,name TEXT,info TEXT,individual INTEGER, status INTEGER, story INTEGER, prio INTEGER);",
-                "CREATE TABLE IF NOT EXISTS individuals (id INTEGER NOT NULL PRIMARY KEY,firstName TEXT,lastName INTEGER,info TEXT);",
+                "CREATE TABLE IF NOT EXISTS individuals (id INTEGER NOT NULL PRIMARY KEY,firstName TEXT,lastName INTEGER,info TEXT,persId INTEGER);",
                 "CREATE TABLE IF NOT EXISTS stories (id INTEGER PRIMARY KEY,storyNumber INTEGER,text TEXT, info TEXT);"
         };
         for (String currSQL : sqlInit) {
@@ -102,6 +102,7 @@ public class DatabaseConnection {
         ResultSet currRs = null;
         if (conn != null) {
             try {
+                System.out.println("In execute Query"); // TEST
                 stmnt = conn.createStatement();
                 currRs = stmnt.executeQuery(sql);
             } catch (SQLException e) {
@@ -128,32 +129,52 @@ public class DatabaseConnection {
         return currRs;
     }
 
+    private int executeSQLUpdate(String sql) {
+        Statement stmnt = null;
+        int results = 0;
+
+        try {
+            stmnt = conn.createStatement();
+            results = stmnt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+        if (stmnt != null) {
+            try {
+                stmnt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+        return results;
+    }
+
     // SPECIFIC DB CALLS
 
     public boolean addIndividual(Individual individual) {
         String firstName = individual.getFirstName();
         String lastName = individual.getLastName();
         String info = individual.getInfo();
-        String sql = "INSERT INTO individuals (firstName, lastName, info) VALUES(\""+firstName+"\",\""+lastName+"\",\""+info+"\");";
-
-        ResultSet results = executeSQLQuery(sql);
-        System.out.println("Resulset: "+results); // TEST
-        try {
-            int id = results.getInt("id");
-            System.out.println("Id: "+id); // TEST
-            individual.setId(id);
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
+        int persId = individual.getId();
+        String sql = "INSERT INTO individuals (firstName, lastName, info, persId) VALUES(\""+firstName+"\",\""+lastName+"\",\""+info+"\",\""+persId+"\");";
+        return executeSQL(sql);
+      }
 
     public boolean updateIndividual(Individual individual)  {
         String firstName = individual.getFirstName();
         String lastName = individual.getLastName();
         String info = individual.getInfo();
-        return true;
+        int persId = individual.getId();
+
+        String sql = "UPDATE individuals SET firstName ='"+firstName+"', lastName = '"+lastName+"', info = '"+info+"' WHERE persId = "+persId+";";
+
+        if (executeSQLUpdate(sql) > 0) {
+            return true;
+        }
+        return false;
     }
 
 }
