@@ -40,17 +40,26 @@ public class DatabaseConnectionTest {
         assertTrue("Can not close DB connection", dbconn.closeConn());
     }
 
-    // Database read/write tests
+    // DB READ WRITE ACCESS
+
+    // Individual
 
     @Test
     public void testInsertIndividual() {
         assertTrue("Could not add individual to DB",dbconn.addIndividual(individual));
     }
 
-
     @Test
     public void testUpdateIndividual() {
         individual.setInfo("C++");
         assertTrue("Could not update individual in DB", dbconn.updateIndividual(individual));
     }
+
+    @Test
+    public void testGetIndividual() {
+        int persId = 7777777;
+        assertNotNull("Couldnt get indivdual from DB", dbconn.getIndividual(persId));
+    }
+
+
 }

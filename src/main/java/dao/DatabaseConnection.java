@@ -20,7 +20,7 @@ public class DatabaseConnection {
 
         String path = "kanban.db";
         // db parameters
-        String url = "jdbc:sqlite:"+path;
+        String url = "jdbc:sqlite:" + path;
         // create a connection to the database
         try {
             conn = DriverManager.getConnection(url);
@@ -96,15 +96,15 @@ public class DatabaseConnection {
      * @param sql String
      * @return ArrayList<HashMap>
      */
-    private ResultSet executeSQLQuery(String sql) {
-
+    private ArrayList executeSQLQuery(String sql) {
+        ArrayList returnList = null;
         Statement stmnt = null;
         ResultSet currRs = null;
         if (conn != null) {
             try {
-                System.out.println("In execute Query"); // TEST
                 stmnt = conn.createStatement();
                 currRs = stmnt.executeQuery(sql);
+                returnList = resultSetToArrayList(currRs);
             } catch (SQLException e) {
                 e.printStackTrace();
             } finally {
@@ -126,8 +126,9 @@ public class DatabaseConnection {
         } else {
             System.out.println("No connection to database.");
         }
-        return currRs;
+        return returnList;
     }
+
 
     private int executeSQLUpdate(String sql) {
         Statement stmnt = null;
@@ -139,37 +140,75 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-        if (stmnt != null) {
-            try {
-                stmnt.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            if (stmnt != null) {
+                try {
+                    stmnt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
-        }
 
+        }
+        return results;
     }
 
-        return results;
+    /**
+     * Converts a resultset to a ArrayList of HashMaps.
+     *
+     * @param rs ResultSet
+     * @return ArrayList<HashMap>
+     */
+    private ArrayList resultSetToArrayList(ResultSet rs) {
+        ResultSetMetaData md = null;
+        ArrayList list = null;
+        try {
+            md = rs.getMetaData();
+            int columns = md.getColumnCount();
+            list = new ArrayList(50);
+            while (rs.next()) {
+                HashMap row = new HashMap(columns);
+                for (int i = 1; i <= columns; ++i) {
+                    row.put(md.getColumnName(i), rs.getObject(i));
+                }
+                list.add(row);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
     // SPECIFIC DB CALLS
 
+    /**
+     * Adds a individual to database
+     *
+     * @param individual
+     * @return
+     */
     public boolean addIndividual(Individual individual) {
         String firstName = individual.getFirstName();
         String lastName = individual.getLastName();
         String info = individual.getInfo();
         int persId = individual.getId();
-        String sql = "INSERT INTO individuals (firstName, lastName, info, persId) VALUES(\""+firstName+"\",\""+lastName+"\",\""+info+"\",\""+persId+"\");";
+        String sql = "INSERT INTO individuals (firstName, lastName, info, persId) VALUES(\"" + firstName + "\",\"" + lastName + "\",\"" + info + "\",\"" + persId + "\");";
         return executeSQL(sql);
-      }
+    }
 
-    public boolean updateIndividual(Individual individual)  {
+
+    /**
+     * Updates a individual in database
+     *
+     * @param individual
+     * @return
+     */
+    public boolean updateIndividual(Individual individual) {
         String firstName = individual.getFirstName();
         String lastName = individual.getLastName();
         String info = individual.getInfo();
         int persId = individual.getId();
 
-        String sql = "UPDATE individuals SET firstName ='"+firstName+"', lastName = '"+lastName+"', info = '"+info+"' WHERE persId = "+persId+";";
+        String sql = "UPDATE individuals SET firstName ='" + firstName + "', lastName = '" + lastName + "', info = '" + info + "' WHERE persId = " + persId + ";";
 
         if (executeSQLUpdate(sql) > 0) {
             return true;
@@ -177,4 +216,20 @@ public class DatabaseConnection {
         return false;
     }
 
+    /**
+     * Get specific individual from DB
+     *
+     * @param persId int
+     * @return individual Individual
+     */
+    public Individual getIndividual(int persId) {
+        String sql = "SELECT * FROM individuals WHERE persId = " + persId + ";";
+        Individual currInd = null;
+        ArrayList<HashMap> currRes = executeSQLQuery(sql);
+        if (currRes.size() > 0) {
+            HashMap currMap = (HashMap) currRes.get(0);
+            currInd = new Individual((String) currMap.get("firstName"), (String) currMap.get("lastName"), (String) currMap.get("info"), (int) currMap.get("persId"));
+        }
+        return currInd;
+    }
 }
