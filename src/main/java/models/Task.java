@@ -1,12 +1,16 @@
 package models;
 
 /**
+ * Task class. Holds information about tasks.
+ *
  * Created by juan on 29/08/16.
  */
 public class Task {
 
     private String name, info;
     private int sprint, status, prio;
+
+    // CONSTRUCTORS
 
     public Task (){
 
@@ -24,6 +28,8 @@ public class Task {
         this.status = status;
         this.prio = prio;
     }
+
+    // GETTERS & SETTERS
 
     public String getName() {
         return name;

@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
+ *
+ * Database connection and commands class.
+ *
  * Created by juan on 29/08/16.
  */
 public class DatabaseConnection {
@@ -14,10 +17,12 @@ public class DatabaseConnection {
     private Connection conn;
     private boolean connected;
 
+
+	/**
+     * Constructor that enables database connection.
+     */
     public DatabaseConnection() {
-
         connected = false;
-
         String path = "kanban.db";
         // db parameters
         String url = "jdbc:sqlite:" + path;
@@ -31,12 +36,22 @@ public class DatabaseConnection {
         }
     }
 
+	/**
+     * Returns connection status
+     *
+     * @return boolean
+     */
     public boolean isConnected() {
         return connected;
     }
 
+	/**
+	 *
+     * Gracefully closes database connection.
+     *
+     * @return boolean.
+     */
     public boolean closeConn() {
-
         boolean closed = false;
 
         try {
@@ -49,6 +64,9 @@ public class DatabaseConnection {
         return closed;
     }
 
+	/**
+     * Initializes database with table creation if previously not created.
+     */
     private void initDB() {
         String sqlInit[] = {
                 "CREATE TABLE IF NOT EXISTS tasks (id INTEGER NOT NULL PRIMARY KEY,name TEXT,info TEXT,individual INTEGER, status INTEGER, story INTEGER, prio INTEGER);",
@@ -129,7 +147,12 @@ public class DatabaseConnection {
         return returnList;
     }
 
-
+	/**
+     * Executes a query and returns the number of rows affected.
+     *
+     * @param sql String
+     * @return int
+     */
     private int executeSQLUpdate(String sql) {
         Statement stmnt = null;
         int results = 0;
