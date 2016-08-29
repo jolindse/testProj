@@ -5,6 +5,7 @@ package models;
  */
 public class Individual {
     private String firstName, lastName, info;
+    private int id = 0;
 
     public Individual() {}
 
@@ -12,6 +13,7 @@ public class Individual {
         this.firstName = firstName;
         this.lastName = lastName;
         this.info = info;
+        this.id = 0;
     }
 
     public void setFirstName(String firstName) {
@@ -36,5 +38,13 @@ public class Individual {
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
