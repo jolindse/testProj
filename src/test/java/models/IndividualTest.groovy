@@ -2,6 +2,7 @@ package models
 
 import spock.lang.Shared
 import spock.lang.Specification
+import spock.lang.Unroll
 
 /**
  * <h1>Created by Mattias on 2016-08-29.</h1>
@@ -15,6 +16,7 @@ class IndividualTest extends Specification {
             individual != null
     }
 
+    @Unroll
     def "Testing full constructor"() {
         when:
             Individual ind = new Individual(firstName, lastName, info)
@@ -25,6 +27,7 @@ class IndividualTest extends Specification {
         where:
             firstName|lastName|info|expFirst|expLast|expInfo
             'Mattias'|'Larsson'|'info'|'Mattias'|'Larsson'|'info'
+
     }
     @Shared
         Individual individual = new Individual()

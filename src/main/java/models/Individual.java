@@ -1,5 +1,8 @@
 package models;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+
 /**
  * <h1>Created by Mattias on 2016-08-29.</h1>
  */
@@ -9,11 +12,11 @@ public class Individual {
 
     public Individual() {}
 
-    public Individual(String firstName, String lastName, String info) {
+    public Individual(String firstName, String lastName, String info, int id) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.info = info;
-        this.id = 0;
+        this.id = id;
     }
 
     public void setFirstName(String firstName) {
