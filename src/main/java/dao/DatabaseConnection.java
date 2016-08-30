@@ -1,6 +1,7 @@
 package dao;
 
 import models.Individual;
+import models.Story;
 import models.Task;
 
 import java.sql.*;
@@ -83,7 +84,6 @@ public class DatabaseConnection {
                         "info TEXT);",
                 "CREATE TABLE IF NOT EXISTS stories " +
                         "(id INTEGER PRIMARY KEY," +
-                        "storyNumber INTEGER," +
                         "text TEXT, " +
                         "info TEXT);",
                 "CREATE TABLE IF NOT EXISTS tasksindividuals " +
@@ -312,7 +312,9 @@ public class DatabaseConnection {
     public boolean updateTask(Task task) {
         int taskDBid = 0;
         String sql = "SELECT * FROM tasks WHERE name = '"+task.getName()+"';";
+
         ArrayList<HashMap> currRes = executeSQLQuery(sql);
+        System.out.println("Gotten task result: "+currRes.size()); // TEST
         if (currRes.size() > 0) {
             HashMap currMap = (HashMap) currRes.get(0);
             taskDBid = (int) currMap.get("id");
@@ -329,6 +331,12 @@ public class DatabaseConnection {
         return false;
     }
 
+    /**
+     * Get specific task from DB
+     *
+     * @param id int
+     * @return Task
+     */
     public Task getTask(int id) {
         Task currTask = null;
         String sql = "SELECT * FROM tasks WHERE id = "+id+";";
@@ -343,6 +351,57 @@ public class DatabaseConnection {
             currTask.setId((int)currMap.get("id"));
         }
         return currTask;
+    }
+
+    // Stories
+
+    /**
+     * Adds a story to DB
+     *
+     * @param story Story
+     * @return boolean
+     */
+    public boolean addStory(Story story) {
+        System.out.println("Story in: " + story); // TEST
+        String sql = String.format("INSERT INTO stories (id, text, info) VALUES (%s,'%s','%s');",
+                story.getNumber(),story.getText(),story.getInfo());
+        System.out.println(sql); // TEST
+        return executeSQL(sql);
+    }
+
+    /**
+     * Updates a story in DB
+     *
+     * @param story Story
+     * @return boolean
+     */
+    public boolean updateStory(Story story) {
+        String sql = String.format("UPDATE stories SET text='%s', info='%s' WHERE id = %s;",
+        story.getText(), story.getInfo(), story.getNumber());
+        if (executeSQLUpdate(sql) > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Gets specific story from DB
+     *
+     * @param number int
+     * @return Story
+     */
+    public Story getStory(int number) {
+        Story currStory = null;
+        String sql = "SELECT * FROM stories WHERE id = "+number+";";
+        ArrayList<HashMap> currRes = executeSQLQuery(sql);
+        if (currRes.size() > 0) {
+            HashMap currMap = (HashMap) currRes.get(0);
+            currStory = new Story();
+            currStory.setText((String)currMap.get("text"));
+            currStory.setInfo((String)currMap.get("info"));
+            currStory.setNumber((int)currMap.get("id"));
+        }
+        return currStory;
     }
 
 }

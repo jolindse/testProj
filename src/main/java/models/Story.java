@@ -9,7 +9,7 @@ package models;
 
 
 public class Story {
-	private int id, number;
+	private int number;
 	private String text, info;
 
 	// CONSTRUCTORS
@@ -54,11 +54,4 @@ public class Story {
 		this.info = info;
 	}
 
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 }
