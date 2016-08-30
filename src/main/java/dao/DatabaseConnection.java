@@ -283,6 +283,17 @@ public class DatabaseConnection {
         return currInd;
     }
 
+    /**
+     * Removes specific individual from DB
+     *
+     * @param persId int
+     * @return boolean
+     */
+    public boolean removeIndividual(int persId) {
+        String sql = "DELETE FROM individuals WHERE id = "+persId+";";
+        return executeSQL(sql);
+    }
+
     // Tasks
 
     /**
@@ -291,7 +302,7 @@ public class DatabaseConnection {
      * @param task Task
      * @return boolean
      */
-    public boolean addTask(Task task) {
+    public Task addTask(Task task) {
         String name = task.getName();
         String info = task.getInfo();
         int individual = 0;
@@ -300,7 +311,14 @@ public class DatabaseConnection {
 
         String sql = String.format("INSERT INTO tasks (name, info, status, prio) VALUES ('%s','%s',%s,%s);",
                 name, info, status, prio);
-        return executeSQL(sql);
+        if(executeSQL(sql)){
+            sql = "SELECT MAX(id) AS newid FROM tasks;";
+            ArrayList<HashMap> currRes = executeSQLQuery(sql);
+            HashMap currMap = (HashMap) currRes.get(0);
+            int id = (int) currMap.get("newid");
+            task.setId(id);
+        }
+        return task;
     }
 
     /**
@@ -314,7 +332,6 @@ public class DatabaseConnection {
         String sql = "SELECT * FROM tasks WHERE name = '"+task.getName()+"';";
 
         ArrayList<HashMap> currRes = executeSQLQuery(sql);
-        System.out.println("Gotten task result: "+currRes.size()); // TEST
         if (currRes.size() > 0) {
             HashMap currMap = (HashMap) currRes.get(0);
             taskDBid = (int) currMap.get("id");
@@ -353,6 +370,17 @@ public class DatabaseConnection {
         return currTask;
     }
 
+    /**
+     * Deletes a task from DB
+     *
+     * @param id int
+     * @return boolean
+     */
+    public boolean removeTask(int id) {
+        String sql = "DELETE FROM tasks WHERE id = "+id+";";
+        return executeSQL(sql);
+    }
+
     // Stories
 
     /**
@@ -362,10 +390,8 @@ public class DatabaseConnection {
      * @return boolean
      */
     public boolean addStory(Story story) {
-        System.out.println("Story in: " + story); // TEST
         String sql = String.format("INSERT INTO stories (id, text, info) VALUES (%s,'%s','%s');",
                 story.getNumber(),story.getText(),story.getInfo());
-        System.out.println(sql); // TEST
         return executeSQL(sql);
     }
 
@@ -402,6 +428,17 @@ public class DatabaseConnection {
             currStory.setNumber((int)currMap.get("id"));
         }
         return currStory;
+    }
+
+    /**
+     * Deletes a story from DB
+     *
+     * @param number int
+     * @return boolean
+     */
+    public boolean removeStory(int number) {
+        String sql = "DELETE FROM stories WHERE id = "+number+";";
+        return executeSQL(sql);
     }
 
 }

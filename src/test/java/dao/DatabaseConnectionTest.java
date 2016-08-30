@@ -72,11 +72,17 @@ public class DatabaseConnectionTest {
         assertNotNull("Couldn't get individual from DB", dbconn.getIndividual(persId));
     }
 
+    @Test
+    public void testDeleteIndividual() {
+        int persId = 7777777;
+        assertTrue("Couldn't delete individual from DB", dbconn.removeIndividual(persId));
+    }
+
     // Tasks
 
     @Test
     public void testInsertTask() {
-        assertTrue("Could not add task to DB", dbconn.addTask(task));
+        assertNotNull("Could not add task to DB", dbconn.addTask(task).getId());
     }
 
     @Test
@@ -88,6 +94,11 @@ public class DatabaseConnectionTest {
     @Test
     public void testGetTask() {
         assertNotNull("Couldn't get specific task", dbconn.getTask(1));
+    }
+
+    @Test
+    public void testRemoveTask() {
+        assertTrue("Could not remove task from DB", dbconn.removeTask(1));
     }
 
     // Stories
@@ -106,5 +117,10 @@ public class DatabaseConnectionTest {
     @Test
     public void testGetStory() {
         assertNotNull("Could not get story from DB", dbconn.getStory(1));
+    }
+
+    @Test
+    public void testRemoveStory() {
+        assertTrue("Couldn't delete story from DB", dbconn.removeStory(1));
     }
 }

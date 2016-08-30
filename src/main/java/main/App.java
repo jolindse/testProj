@@ -17,6 +17,7 @@ public class App extends Application {
     private Parent root;
     private boolean loaded = false;
     private FXMLLoader loader;
+    private static Controller controller;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -27,6 +28,7 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
+        controller = new Controller();
         launch(args);
     }
 
@@ -49,6 +51,10 @@ public class App extends Application {
 
     public MainViewController getController() {
         return loader.getController();
+    }
+
+    public static Controller getMainController() {
+        return controller;
     }
 
 }

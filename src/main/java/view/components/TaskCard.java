@@ -7,6 +7,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import models.Individual;
+import models.Task;
 import view.controller.MainViewController;
 
 /**
@@ -16,9 +17,11 @@ public class TaskCard extends GridPane {
     private int status;
     private Color statusColor[] = new Color[] {Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN};
     private Label header = new Label("New Task");
+    private Task task;
 
-    public TaskCard(MainViewController controller) {
+    public TaskCard(MainViewController controller, Task task) {
         this.status = 0;
+        this.task = task;
         add(header, 0, 0);
         Button moveButton = new Button(">>");
         add(moveButton, 1, 0);

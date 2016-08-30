@@ -9,6 +9,9 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import main.App;
+import main.Controller;
+import models.Task;
 import view.components.TaskCard;
 
 import java.net.URL;
@@ -45,9 +48,12 @@ public class MainViewController implements Initializable {
     private ObservableList<TaskCard> listArray[];
     private TaskCard selectedTask = null;
 
+    private Controller mainController;
     @FXML
     public void addTask() {
-        todoList.add(new TaskCard(this));
+        Task currTask = mainController.addTask(new Task());
+        todoList.add(new TaskCard(this, currTask));
+
         redraw();
     }
 
@@ -72,6 +78,7 @@ public class MainViewController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        mainController = App.getMainController();
         todoList = FXCollections.observableArrayList();
         progressList = FXCollections.observableArrayList();
         testList = FXCollections.observableArrayList();
