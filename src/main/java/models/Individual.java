@@ -8,9 +8,15 @@ import java.lang.reflect.Method;
  */
 public class Individual {
     private String firstName, lastName, info;
-    private int id = 0;
+    private int id;
 
     public Individual() {}
+
+    public Individual(String firstName, String lastName, String info) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.info = info;
+    }
 
     public Individual(String firstName, String lastName, String info, int id) {
         this.firstName = firstName;

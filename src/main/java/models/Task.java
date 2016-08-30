@@ -3,12 +3,14 @@ package models;
 /**
  * Task class. Holds information about tasks.
  *
+ * Unassigned tasks always has 0 as individual.
+ *
  * Created by juan on 29/08/16.
  */
 public class Task {
 
     private String name, info;
-    private int sprint, status, prio;
+    private int sprint, status, prio, id;
 
     // CONSTRUCTORS
 
@@ -27,6 +29,15 @@ public class Task {
         this.sprint = sprint;
         this.status = status;
         this.prio = prio;
+    }
+
+    public Task(String name, String info, int sprint, int status, int prio, int id) {
+        this.name = name;
+        this.info = info;
+        this.sprint = sprint;
+        this.status = status;
+        this.prio = prio;
+        this.id = id;
     }
 
     // GETTERS & SETTERS
@@ -69,5 +80,14 @@ public class Task {
 
     public void setPrio(int prio) {
         this.prio = prio;
+    }
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
