@@ -34,7 +34,6 @@ class TaskTest extends Specification {
         task.getSprint() == 1;
         task.getStatus() == 2;
         task.getPrio() == 3;
-
     }
 
 

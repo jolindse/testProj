@@ -1,6 +1,8 @@
 package dao;
 
 import models.Individual;
+import models.Story;
+import models.Task;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -69,9 +71,29 @@ public class DatabaseConnection {
      */
     private void initDB() {
         String sqlInit[] = {
-                "CREATE TABLE IF NOT EXISTS tasks (id INTEGER NOT NULL PRIMARY KEY,name TEXT,info TEXT,individual INTEGER, status INTEGER, story INTEGER, prio INTEGER);",
-                "CREATE TABLE IF NOT EXISTS individuals (id INTEGER NOT NULL PRIMARY KEY,firstName TEXT,lastName INTEGER,info TEXT,persId INTEGER);",
-                "CREATE TABLE IF NOT EXISTS stories (id INTEGER PRIMARY KEY,storyNumber INTEGER,text TEXT, info TEXT);"
+                "CREATE TABLE IF NOT EXISTS tasks " +
+                        "(id INTEGER NOT NULL PRIMARY KEY," +
+                        "name TEXT," +
+                        "info TEXT," +
+                        "status INTEGER," +
+                        "prio INTEGER);",
+                "CREATE TABLE IF NOT EXISTS individuals " +
+                        "(id INTEGER NOT NULL PRIMARY KEY," +
+                        "firstName TEXT," +
+                        "lastName INTEGER," +
+                        "info TEXT);",
+                "CREATE TABLE IF NOT EXISTS stories " +
+                        "(id INTEGER PRIMARY KEY," +
+                        "text TEXT, " +
+                        "info TEXT);",
+                "CREATE TABLE IF NOT EXISTS tasksindividuals " +
+                        "(id INTEGER PRIMARY KEY, " +
+                        "taskid INTEGER REFERENCES tasks(id) ON DELETE SET NULL, " +
+                        "individualid INTEGER REFERENCES individuals(id) ON DELETE SET NULL);",
+                "CREATE TABLE IF NOT EXISTS tasksstories " +
+                        "(id INTEGER PRIMARY KEY, " +
+                        "taskid INTEGER REFERENCES tasks(id) ON DELETE SET NULL, " +
+                        "storyid INTEGER REFERENCES stories(id) ON DELETE SET NULL);"
         };
         for (String currSQL : sqlInit) {
             executeSQL(currSQL);
@@ -92,14 +114,15 @@ public class DatabaseConnection {
                 stmnt.execute(sql);
                 return true;
             } catch (SQLException e) {
-                e.printStackTrace();
+                return false;
+                //e.printStackTrace();
             } finally {
                 try {
                     if (stmnt != null) {
                         stmnt.close();
                     }
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    return false;
                 }
             }
         } else {
@@ -203,6 +226,8 @@ public class DatabaseConnection {
 
     // SPECIFIC DB CALLS
 
+    // Individuals
+
     /**
      * Adds a individual to database
      *
@@ -213,11 +238,12 @@ public class DatabaseConnection {
         String firstName = individual.getFirstName();
         String lastName = individual.getLastName();
         String info = individual.getInfo();
-        int persId = individual.getId();
-        String sql = "INSERT INTO individuals (firstName, lastName, info, persId) VALUES(\"" + firstName + "\",\"" + lastName + "\",\"" + info + "\",\"" + persId + "\");";
+        int id = individual.getId();
+
+        String sql = String.format("INSERT INTO individuals (id,firstName, lastName, info) VALUES(%s,'%s','%s','%s');",
+             id,firstName,lastName,info);
         return executeSQL(sql);
     }
-
 
     /**
      * Updates a individual in database
@@ -231,7 +257,8 @@ public class DatabaseConnection {
         String info = individual.getInfo();
         int persId = individual.getId();
 
-        String sql = "UPDATE individuals SET firstName ='" + firstName + "', lastName = '" + lastName + "', info = '" + info + "' WHERE persId = " + persId + ";";
+        String sql = String.format("UPDATE individuals SET firstName ='%s',lastname='%s',info='%s' WHERE id = %s;",
+                firstName, lastName, info, persId);
 
         if (executeSQLUpdate(sql) > 0) {
             return true;
@@ -246,13 +273,135 @@ public class DatabaseConnection {
      * @return individual Individual
      */
     public Individual getIndividual(int persId) {
-        String sql = "SELECT * FROM individuals WHERE persId = " + persId + ";";
+        String sql = "SELECT * FROM individuals WHERE id = " + persId + ";";
         Individual currInd = null;
         ArrayList<HashMap> currRes = executeSQLQuery(sql);
         if (currRes.size() > 0) {
             HashMap currMap = (HashMap) currRes.get(0);
-            currInd = new Individual((String) currMap.get("firstName"), (String) currMap.get("lastName"), (String) currMap.get("info"), (int) currMap.get("persId"));
+            currInd = new Individual((String) currMap.get("firstName"), (String) currMap.get("lastName"), (String) currMap.get("info"), (int) currMap.get("id"));
         }
         return currInd;
     }
+
+    // Tasks
+
+    /**
+     * Adds a task to DB
+     *
+     * @param task Task
+     * @return boolean
+     */
+    public boolean addTask(Task task) {
+        String name = task.getName();
+        String info = task.getInfo();
+        int individual = 0;
+        int status = 0;
+        int prio = 0;
+
+        String sql = String.format("INSERT INTO tasks (name, info, status, prio) VALUES ('%s','%s',%s,%s);",
+                name, info, status, prio);
+        return executeSQL(sql);
+    }
+
+    /**
+     * Updates a existing task in DB
+     *
+     * @param task Task
+     * @return boolean
+     */
+    public boolean updateTask(Task task) {
+        int taskDBid = 0;
+        String sql = "SELECT * FROM tasks WHERE name = '"+task.getName()+"';";
+
+        ArrayList<HashMap> currRes = executeSQLQuery(sql);
+        System.out.println("Gotten task result: "+currRes.size()); // TEST
+        if (currRes.size() > 0) {
+            HashMap currMap = (HashMap) currRes.get(0);
+            taskDBid = (int) currMap.get("id");
+            sql = String.format("UPDATE tasks SET name='%s', info='%s', status=%s, prio=%s WHERE id = %s;",
+                    task.getName(),
+                    task.getInfo(),
+                    task.getStatus(),
+                    task.getPrio(),
+                    taskDBid);
+            if (executeSQLUpdate(sql) > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Get specific task from DB
+     *
+     * @param id int
+     * @return Task
+     */
+    public Task getTask(int id) {
+        Task currTask = null;
+        String sql = "SELECT * FROM tasks WHERE id = "+id+";";
+        ArrayList<HashMap> currRes = executeSQLQuery(sql);
+        if (currRes.size() > 0) {
+            HashMap currMap = (HashMap) currRes.get(0);
+            currTask = new Task();
+            currTask.setName((String)currMap.get("name"));
+            currTask.setInfo((String)currMap.get("info"));
+            currTask.setPrio((int)currMap.get("prio"));
+            currTask.setStatus((int)currMap.get("status"));
+            currTask.setId((int)currMap.get("id"));
+        }
+        return currTask;
+    }
+
+    // Stories
+
+    /**
+     * Adds a story to DB
+     *
+     * @param story Story
+     * @return boolean
+     */
+    public boolean addStory(Story story) {
+        System.out.println("Story in: " + story); // TEST
+        String sql = String.format("INSERT INTO stories (id, text, info) VALUES (%s,'%s','%s');",
+                story.getNumber(),story.getText(),story.getInfo());
+        System.out.println(sql); // TEST
+        return executeSQL(sql);
+    }
+
+    /**
+     * Updates a story in DB
+     *
+     * @param story Story
+     * @return boolean
+     */
+    public boolean updateStory(Story story) {
+        String sql = String.format("UPDATE stories SET text='%s', info='%s' WHERE id = %s;",
+        story.getText(), story.getInfo(), story.getNumber());
+        if (executeSQLUpdate(sql) > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Gets specific story from DB
+     *
+     * @param number int
+     * @return Story
+     */
+    public Story getStory(int number) {
+        Story currStory = null;
+        String sql = "SELECT * FROM stories WHERE id = "+number+";";
+        ArrayList<HashMap> currRes = executeSQLQuery(sql);
+        if (currRes.size() > 0) {
+            HashMap currMap = (HashMap) currRes.get(0);
+            currStory = new Story();
+            currStory.setText((String)currMap.get("text"));
+            currStory.setInfo((String)currMap.get("info"));
+            currStory.setNumber((int)currMap.get("id"));
+        }
+        return currStory;
+    }
+
 }
