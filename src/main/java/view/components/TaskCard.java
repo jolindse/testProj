@@ -6,6 +6,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
+import models.Individual;
 import view.controller.MainViewController;
 
 /**
@@ -19,9 +20,9 @@ public class TaskCard extends GridPane {
     public TaskCard(MainViewController controller) {
         this.status = 0;
         add(header, 0, 0);
-        Button moveTask = new Button(">>");
-        add(moveTask, 1, 0);
-        moveTask.setOnAction(moveAction -> {
+        Button moveButton = new Button(">>");
+        add(moveButton, 1, 0);
+        moveButton.setOnAction(moveAction -> {
             if (status < 3) {
                 controller.moveTask(this);
                 status++;

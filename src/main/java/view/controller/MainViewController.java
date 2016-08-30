@@ -53,9 +53,11 @@ public class MainViewController implements Initializable {
 
     @FXML
     private void removeTask() {
-        int index = selectedTask.getStatus();
-        listArray[index].remove(selectedTask);
-        redraw();
+        if (selectedTask != null) {
+            int index = selectedTask.getStatus();
+            listArray[index].remove(selectedTask);
+            redraw();
+        }
     }
 
     public void moveTask(TaskCard task) {
