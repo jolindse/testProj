@@ -41,7 +41,7 @@
             <Label text="Done" GridPane.columnIndex="3" GridPane.halignment="CENTER" />
             <ScrollPane fx:id="todoScrollPane" hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                <content>
-                  <VBox fx:id="todoBox" prefHeight="299.0" prefWidth="149.0" />
+                  <VBox fx:id="todoBox" prefHeight="299.0" prefWidth="149.0"/>
                </content>
             </ScrollPane>
             <ScrollPane fx:id="wipScrollPane" hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" >

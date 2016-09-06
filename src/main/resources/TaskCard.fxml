@@ -11,11 +11,11 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
-<BorderPane fx:id="expandedPane" fx:controller="view.controller.ExpandedController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="236.0" prefWidth="268.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane fx:id="expandedPane" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.controller.ExpandedController">
    <center>
-      <HBox prefHeight="364.0" prefWidth="350.0" BorderPane.alignment="CENTER">
+      <HBox maxHeight="1.7976931348623157E308" minHeight="-Infinity" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="editButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0">
+            <Button fx:id="editButton" onAction="#edit" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0">
                <graphic>
                   <ImageView>
                      <image>
@@ -26,12 +26,12 @@
                <HBox.margin>
                   <Insets left="10.0" top="10.0" />
                </HBox.margin></Button>
-            <ScrollPane hbarPolicy="NEVER" prefHeight="233.0" prefWidth="199.0" HBox.hgrow="NEVER">
+            <ScrollPane hbarPolicy="NEVER" minHeight="-Infinity" HBox.hgrow="NEVER">
                <HBox.margin>
                   <Insets left="5.0" right="10.0" top="10.0" />
                </HBox.margin>
                <content>
-                  <TextArea fx:id="infoTextArea" prefHeight="200.0" prefWidth="200.0" />
+                  <TextArea fx:id="infoTextArea" editable="false" maxHeight="1.7976931348623157E308" />
                </content>
             </ScrollPane>
          </children>
@@ -41,7 +41,7 @@
       <AnchorPane prefHeight="45.0" prefWidth="268.0" BorderPane.alignment="CENTER">
          <children>
             <Label fx:id="sprintLabel" layoutX="14.0" layoutY="12.0" text="Sprint #" AnchorPane.leftAnchor="10.0" />
-            <Button fx:id="collapseButton" onAction="#collapse" layoutX="189.0" layoutY="7.0" mnemonicParsing="false" AnchorPane.rightAnchor="10.0">
+            <Button fx:id="collapseButton" layoutX="189.0" layoutY="7.0" mnemonicParsing="false" onAction="#collapse" AnchorPane.rightAnchor="10.0">
                <graphic>
                   <ImageView>
                      <image>
@@ -50,7 +50,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button fx:id="individualButton" layoutX="158.0" layoutY="7.0" mnemonicParsing="false">
+            <Button fx:id="individualButton" layoutX="158.0" layoutY="7.0" mnemonicParsing="false" AnchorPane.rightAnchor="65.0">
                <graphic>
                   <ImageView>
                      <image>

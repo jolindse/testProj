@@ -75,6 +75,7 @@ public class MainViewController implements Initializable {
         if (selectedTask != null) {
             int index = selectedTask.getStatus();
             listArray[index].remove(selectedTask);
+            listArray[index].remove(selectedTask.getExpanded());
             mainController.removeTask(selectedTask.getTask());
             redraw();
         }
@@ -84,8 +85,15 @@ public class MainViewController implements Initializable {
         int index = task.getStatus();
         listArray[index].remove(task);
         listArray[index+1].add(task);
+        if (task.getExpanded() != null) {
+            if (listArray[index].contains(task.getExpanded())) {
+                listArray[index].remove(task.getExpanded());
+                listArray[index + 1].add(listArray[index + 1].indexOf(task) + 1, task.getExpanded());
+            }
+        }
         redraw();
     }
+
     public int getTodos() {
         return todoBox.getChildren().size();
     }
@@ -123,13 +131,12 @@ public class MainViewController implements Initializable {
         }
     }
 
-    public void expandTask(TaskCard card, Parent root, ExpandedController controller) {
-        int index = card.getTask().getStatus();
+    public void expandTask(TaskCard card, ExpandedController expandedController) {
+        int index = card.getStatus();
         int indexToAdd = listArray[index].indexOf(card) + 1;
-        listArray[index].add(indexToAdd, root);
+        listArray[index].add(indexToAdd, card.getExpanded());
         redraw();
-        ExpandedController expandedController = controller;
-        expandedController.expand();
+        expandedController.expand(card, this);
     }
 
     public void saveTask(Task task) {
@@ -142,5 +149,15 @@ public class MainViewController implements Initializable {
     public void resetLoader() {
         loader.setController(null);
         loader.setRoot(null);
+    }
+
+    public void collapse(TaskCard card) {
+        listArray[card.getStatus()].remove(card.getExpanded());
+        card.setCollapsed();
+        redraw();
+    }
+
+    public GridPane getMainGrid() {
+        return mainGrid;
     }
 }
