@@ -18,4 +18,8 @@ public class Controller {
         Task completeTask = dao.addTask(task);
         return completeTask;
     }
+
+    public void removeTask(Task task) {
+        dao.removeTask(task.getId());
+    }
 }

@@ -6,10 +6,14 @@ import javafx.embed.swing.JFXPanel;
 import javafx.stage.Stage;
 import main.App;
 import org.junit.Before;
-import org.junit.Rule;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import view.controller.MainViewController;
+
+import java.io.File;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.logging.*;
 
 import static org.junit.Assert.assertTrue;
 
@@ -23,6 +27,7 @@ public class MainViewTest extends Application {
     public void start(Stage primaryStage) throws Exception {
         testToStartApp();
     }
+
     @Before
     public void init() throws Exception {
         new JFXPanel();

@@ -3,17 +3,22 @@ package view.controller;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import main.App;
 import main.Controller;
 import models.Task;
 import view.components.TaskCard;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -47,12 +52,15 @@ public class MainViewController implements Initializable {
     private ObservableList<TaskCard> todoList, progressList, testList, doneList;
     private ObservableList<TaskCard> listArray[];
     private TaskCard selectedTask = null;
+    private FXMLLoader loader;
 
     private Controller mainController;
     @FXML
     public void addTask() {
-        Task currTask = mainController.addTask(new Task());
-        todoList.add(new TaskCard(this, currTask));
+        loader.setLocation(getClass().getResource("../../addNewTaskView.fxml"));
+        loadWindow();
+        AddNewTaskController controller = loader.getController();
+        controller.setMainController(this);
 
         redraw();
     }
@@ -62,6 +70,7 @@ public class MainViewController implements Initializable {
         if (selectedTask != null) {
             int index = selectedTask.getStatus();
             listArray[index].remove(selectedTask);
+            mainController.removeTask(selectedTask.getTask());
             redraw();
         }
     }
@@ -78,6 +87,7 @@ public class MainViewController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        loader = new FXMLLoader();
         mainController = App.getMainController();
         todoList = FXCollections.observableArrayList();
         progressList = FXCollections.observableArrayList();
@@ -101,5 +111,24 @@ public class MainViewController implements Initializable {
         }
         taskSelected.getHeader().setTextFill(Color.BLUE);
         selectedTask = taskSelected;
+    }
+
+    private void loadWindow() {
+        try {
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveTask(Task task) {
+        Task completeTask = mainController.addTask(task);
+        TaskCard card = new TaskCard(this, completeTask);
+        todoList.add(card);
+        redraw();
     }
 }

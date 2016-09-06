@@ -16,15 +16,18 @@ import view.controller.MainViewController;
 public class TaskCard extends GridPane {
     private int status;
     private Color statusColor[] = new Color[] {Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN};
-    private Label header = new Label("New Task");
+    private Label header = new Label();
     private Task task;
 
     public TaskCard(MainViewController controller, Task task) {
+
         this.status = 0;
         this.task = task;
+        this.header.setText(task.getName());
         add(header, 0, 0);
         Button moveButton = new Button(">>");
         add(moveButton, 1, 0);
+        moveButton.getStyleClass().add("taskButton");
         moveButton.setOnAction(moveAction -> {
             if (status < 3) {
                 controller.moveTask(this);
@@ -46,5 +49,9 @@ public class TaskCard extends GridPane {
 
     private void setColor() {
         this.setBackground(new Background(new BackgroundFill(statusColor[getStatus()], null, null)));
+    }
+
+    public Task getTask() {
+        return task;
     }
 }
