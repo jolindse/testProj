@@ -34,6 +34,7 @@ public class AddNewTaskController {
     @FXML
     private Parent root;
 
+
     private MainViewController mainViewController;
     private ObservableList<Integer> sprintList;
 
@@ -58,6 +59,7 @@ public class AddNewTaskController {
     public void close() {
         Stage thisStage = (Stage) cancelButton.getScene().getWindow();
         thisStage.close();
+        mainViewController.resetLoader();
     }
 
     public void setMainController(MainViewController mainController) {

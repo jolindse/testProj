@@ -1,5 +1,6 @@
 package view.controller;
 
+import javafx.animation.ScaleTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -9,10 +10,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import main.App;
 import main.Controller;
 import models.Task;
@@ -49,8 +53,9 @@ public class MainViewController implements Initializable {
     @FXML
     private VBox doneBox;
 
-    private ObservableList<TaskCard> todoList, progressList, testList, doneList;
-    private ObservableList<TaskCard> listArray[];
+
+    private ObservableList<Parent> todoList, progressList, testList, doneList;
+    private ObservableList<Parent> listArray[];
     private TaskCard selectedTask = null;
     private FXMLLoader loader;
 
@@ -104,25 +109,27 @@ public class MainViewController implements Initializable {
     }
 
     public void setSelected(TaskCard taskSelected) {
-        for(int i = 0; i<listArray.length;i++) {
-            listArray[i].forEach(task -> {
-                task.getHeader().setTextFill(Color.BLACK);
-            });
-        }
         taskSelected.getHeader().setTextFill(Color.BLUE);
         selectedTask = taskSelected;
     }
 
     private void loadWindow() {
         try {
-            Parent root = loader.load();
             Stage stage = new Stage();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
+            stage.setScene(new Scene(loader.load()));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void expandTask(TaskCard card, Parent root, ExpandedController controller) {
+        int index = card.getTask().getStatus();
+        int indexToAdd = listArray[index].indexOf(card) + 1;
+        listArray[index].add(indexToAdd, root);
+        redraw();
+        ExpandedController expandedController = controller;
+        expandedController.expand();
     }
 
     public void saveTask(Task task) {
@@ -130,5 +137,10 @@ public class MainViewController implements Initializable {
         TaskCard card = new TaskCard(this, completeTask);
         todoList.add(card);
         redraw();
+    }
+
+    public void resetLoader() {
+        loader.setController(null);
+        loader.setRoot(null);
     }
 }
