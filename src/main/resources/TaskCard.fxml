@@ -15,7 +15,7 @@
    <center>
       <HBox maxHeight="1.7976931348623157E308" minHeight="-Infinity" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="editButton" onAction="#edit" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0">
+            <Button fx:id="editButton" mnemonicParsing="false" onAction="#edit" prefHeight="25.0" prefWidth="25.0">
                <graphic>
                   <ImageView>
                      <image>
@@ -26,12 +26,12 @@
                <HBox.margin>
                   <Insets left="10.0" top="10.0" />
                </HBox.margin></Button>
-            <ScrollPane hbarPolicy="NEVER" minHeight="-Infinity" HBox.hgrow="NEVER">
+            <ScrollPane hbarPolicy="AS_NEEDED" minHeight="-Infinity" HBox.hgrow="NEVER">
                <HBox.margin>
                   <Insets left="5.0" right="10.0" top="10.0" />
                </HBox.margin>
                <content>
-                  <TextArea fx:id="infoTextArea" editable="false" maxHeight="1.7976931348623157E308" />
+                  <TextArea fx:id="infoTextArea" editable="false" maxHeight="1.7976931348623157E308" wrapText="false" />
                </content>
             </ScrollPane>
          </children>

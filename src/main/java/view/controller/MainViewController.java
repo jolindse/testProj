@@ -1,6 +1,5 @@
 package view.controller;
 
-import javafx.animation.ScaleTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -10,13 +9,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import main.App;
 import main.Controller;
 import models.Task;
@@ -30,6 +26,9 @@ import java.util.ResourceBundle;
  * <h1>Created by Mattias on 2016-08-30.</h1>
  */
 public class MainViewController implements Initializable {
+    /*
+        FXML injectibles
+    */
     @FXML
     private Button buttonAdd;
     @FXML
@@ -53,13 +52,18 @@ public class MainViewController implements Initializable {
     @FXML
     private VBox doneBox;
 
-
+    /*
+        Instance-variables
+    */
     private ObservableList<Parent> todoList, progressList, testList, doneList;
     private ObservableList<Parent> listArray[];
     private TaskCard selectedTask = null;
     private FXMLLoader loader;
-
     private Controller mainController;
+
+    /*
+        FXML methods
+    */
     @FXML
     public void addTask() {
         loader.setLocation(getClass().getResource("../../addNewTaskView.fxml"));
@@ -81,6 +85,20 @@ public class MainViewController implements Initializable {
         }
     }
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        loader = new FXMLLoader();
+        mainController = App.getMainController();
+        todoList = FXCollections.observableArrayList();
+        progressList = FXCollections.observableArrayList();
+        testList = FXCollections.observableArrayList();
+        doneList = FXCollections.observableArrayList();
+        listArray = new ObservableList[]{todoList, progressList, testList, doneList};
+    }
+
+    /*
+        Instance methods
+    */
     public void moveTask(TaskCard task) {
         int index = task.getStatus();
         listArray[index].remove(task);
@@ -98,17 +116,6 @@ public class MainViewController implements Initializable {
         return todoBox.getChildren().size();
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        loader = new FXMLLoader();
-        mainController = App.getMainController();
-        todoList = FXCollections.observableArrayList();
-        progressList = FXCollections.observableArrayList();
-        testList = FXCollections.observableArrayList();
-        doneList = FXCollections.observableArrayList();
-        listArray = new ObservableList[]{todoList, progressList, testList, doneList};
-    }
-
     private void redraw() {
         todoBox.getChildren().setAll(todoList);
         progressBox.getChildren().setAll(progressList);
@@ -117,8 +124,13 @@ public class MainViewController implements Initializable {
     }
 
     public void setSelected(TaskCard taskSelected) {
-        taskSelected.getHeader().setTextFill(Color.BLUE);
-        selectedTask = taskSelected;
+        if(selectedTask == null) {
+            selectedTask = taskSelected;
+        } else {
+            selectedTask.getHeader().setTextFill(Color.BLACK);
+            selectedTask = taskSelected;
+        }
+        selectedTask.getHeader().setTextFill(Color.BLUE);
     }
 
     private void loadWindow() {
@@ -159,5 +171,9 @@ public class MainViewController implements Initializable {
 
     public GridPane getMainGrid() {
         return mainGrid;
+    }
+
+    public void updateTaskInfo(TaskCard card) {
+        // TODO: Create method in mainController to update a task's infotext
     }
 }

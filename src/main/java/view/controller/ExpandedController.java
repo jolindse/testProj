@@ -27,6 +27,7 @@ public class ExpandedController implements Initializable {
 
     private MainViewController mainViewController;
     private TaskCard card;
+    private boolean isEditing = false;
 
     @FXML
     private void collapse() {
@@ -42,7 +43,11 @@ public class ExpandedController implements Initializable {
 
     @FXML
     private void edit() {
-        infoTextArea.setEditable(true);
+        if(isEditing) {
+            mainViewController.updateTaskInfo(card);
+        }
+        isEditing = !isEditing;
+        infoTextArea.setEditable(isEditing);
     }
 
     public void expand(TaskCard card, MainViewController mainViewController) {
