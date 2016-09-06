@@ -77,7 +77,7 @@ public class DatabaseConnection {
                         "info TEXT," +
                         "status INTEGER," +
                         "prio INTEGER," +
-                        "sprint INTEGER)" +
+                        "sprint INTEGER," +
                         "story INTEGER);",
                 "CREATE TABLE IF NOT EXISTS individuals " +
                         "(id INTEGER NOT NULL PRIMARY KEY," +
