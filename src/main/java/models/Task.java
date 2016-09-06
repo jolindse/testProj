@@ -10,7 +10,7 @@ package models;
 public class Task {
 
     private String name, info;
-    private int sprint, status, prio, id;
+    private int sprint, status, prio, story, id;
 
     // CONSTRUCTORS
 
@@ -74,6 +74,14 @@ public class Task {
         this.status = status;
     }
 
+    public int getStory() {
+        return story;
+    }
+
+    public void setStory(int story) {
+        this.story = story;
+    }
+
     public int getPrio() {
         return prio;
     }
@@ -90,4 +98,6 @@ public class Task {
     public void setId(int id) {
         this.id = id;
     }
+
+
 }

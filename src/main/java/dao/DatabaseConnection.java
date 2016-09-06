@@ -76,7 +76,9 @@ public class DatabaseConnection {
                         "name TEXT," +
                         "info TEXT," +
                         "status INTEGER," +
-                        "prio INTEGER);",
+                        "prio INTEGER," +
+                        "sprint INTEGER)" +
+                        "story INTEGER);",
                 "CREATE TABLE IF NOT EXISTS individuals " +
                         "(id INTEGER NOT NULL PRIMARY KEY," +
                         "firstName TEXT," +
@@ -306,11 +308,13 @@ public class DatabaseConnection {
         String name = task.getName();
         String info = task.getInfo();
         int individual = 0;
-        int status = 0;
+        int status = task.getStatus();
         int prio = 0;
+        int sprint = task.getSprint();
+        int story = task.getStory();
 
-        String sql = String.format("INSERT INTO tasks (name, info, status, prio) VALUES ('%s','%s',%s,%s);",
-                name, info, status, prio);
+        String sql = String.format("INSERT INTO tasks (name, info, status, prio, sprint, story) VALUES ('%s','%s',%s,%s,%s,%s);",
+                name, info, status, prio, sprint, story);
         if(executeSQL(sql)){
             sql = "SELECT MAX(id) AS newid FROM tasks;";
             ArrayList<HashMap> currRes = executeSQLQuery(sql);
@@ -335,11 +339,13 @@ public class DatabaseConnection {
         if (currRes.size() > 0) {
             HashMap currMap = (HashMap) currRes.get(0);
             taskDBid = (int) currMap.get("id");
-            sql = String.format("UPDATE tasks SET name='%s', info='%s', status=%s, prio=%s WHERE id = %s;",
+            sql = String.format("UPDATE tasks SET name='%s', info='%s', status=%s, prio=%s, story=%s, sprint=%s WHERE id = %s;",
                     task.getName(),
                     task.getInfo(),
                     task.getStatus(),
                     task.getPrio(),
+                    task.getStory(),
+                    task.getSprint(),
                     taskDBid);
             if (executeSQLUpdate(sql) > 0) {
                 return true;
@@ -365,6 +371,8 @@ public class DatabaseConnection {
             currTask.setInfo((String)currMap.get("info"));
             currTask.setPrio((int)currMap.get("prio"));
             currTask.setStatus((int)currMap.get("status"));
+            currTask.setStory((int)currMap.get("story"));
+            currTask.setSprint((int)currMap.get("sprint"));
             currTask.setId((int)currMap.get("id"));
         }
         return currTask;
